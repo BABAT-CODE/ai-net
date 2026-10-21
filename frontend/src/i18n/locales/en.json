@@ -265,7 +265,7 @@
   "page.task.dagHint": "Click node to inspect logs",
   "page.task.dagEmpty": "No nodes configured in the DAG",
   "page.task.agentNode": "Agent Node",
-  "page.notFound.title": "404 — Page Not Found",
+  "page.notFound.title": "Oops! This page wandered off",
   "page.notFound.body": "The page you are looking for does not exist or has been moved.",
   "page.notFound.goDashboard": "Go to Dashboard",
   "page.notFound.goHome": "Go Home",
@@ -417,5 +417,24 @@
   "palette.action.copyAddressFailed": "Could not copy the wallet address",
   "palette.action.toggleTheme": "Toggle theme",
   "palette.action.toggleThemeHint": "Currently {{mode}}",
-  "palette.task.noPrompt": "No prompt"
+  "palette.task.noPrompt": "No prompt",
+
+  "page.serverError.title": "Something went wrong",
+  "page.serverError.body": "The server encountered an unexpected error. Our team has been notified.",
+  "page.serverError.retry": "Try again",
+  "page.serverError.reportIssue": "Report issue",
+
+  "page.forbidden.title": "Access Denied",
+  "page.forbidden.body": "You don't have permission to view this page. Connect your wallet to continue.",
+  "page.forbidden.connectWallet": "Connect Wallet",
+  "page.forbidden.goDashboard": "Go to Dashboard",
+
+  "page.notFound.searchAgents": "Search for agents",
+
+  "wallet.availableLabel": "available",
+  "wallet.reserveNote": "{{reserve}} XLM held as minimum account reserve",
+
+  "errorPage.imageAlt.notFound": "Lost robot agent illustration",
+  "errorPage.imageAlt.serverError": "Server malfunction illustration",
+  "errorPage.imageAlt.forbidden": "Locked door illustration"
 }
