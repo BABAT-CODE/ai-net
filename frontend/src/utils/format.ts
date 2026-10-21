@@ -123,3 +123,15 @@ export function formatNumber(value: number, locale: string, options?: Intl.Numbe
   if (!Number.isFinite(value)) return String(value)
   return getNumberFormatter(locale, options).format(value)
 }
+
+export function formatXlmAmount(value: string | number | null | undefined, locale?: string): string {
+  const numericValue = typeof value === 'string' ? Number.parseFloat(value) : Number(value ?? 0)
+  if (!Number.isFinite(numericValue)) return '0'
+
+  const formatter = new Intl.NumberFormat(locale ?? undefined, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 7,
+  })
+
+  return formatter.format(numericValue)
+}

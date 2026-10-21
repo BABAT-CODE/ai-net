@@ -11,6 +11,7 @@ import { PaymentChart } from '../components/wallet/PaymentChart'
 import { TransactionTable } from '../components/wallet/TransactionTable'
 import { WalletWizard } from '../components/wallet/WalletWizard'
 import { Skeleton, SkeletonAvatar, SkeletonCard, SkeletonText } from '../components/common/Skeleton'
+import { formatXlmAmount } from '../utils/format'
 import styles from './WalletPage.module.css'
 
 const STELLAR_EXPLORER = 'https://stellar.expert/explorer/testnet'
@@ -61,10 +62,12 @@ export function WalletPageSkeleton() {
 function WalletPage() {
   const { t } = useTranslation()
   const { publicKey, connected, ready, connectionMethod, freighterAvailable, connect, connectFreighter, disconnect, hasCompletedWizard } = useWallet()
-  const { balance, balances, loading: balanceLoading, error: balanceError } = useWalletBalance(publicKey)
+  const { balance, availableBalance, minimumReserve, balances, loading: balanceLoading, error: balanceError } = useWalletBalance(publicKey)
   const { showToast } = useToast()
   const { transactions, loading: txLoading, error: txError } = useTransactionHistory(publicKey)
   const [secretInput, setSecretInput] = React.useState('')
+  const [balanceFlash, setBalanceFlash] = React.useState(false)
+  const previousBalanceRef = React.useRef(balance)
   const [connectError, setConnectError] = React.useState<string | null>(null)
   const [connecting, setConnecting] = React.useState(false)
   const [freighterConnecting, setFreighterConnecting] = React.useState(false)
@@ -120,6 +123,15 @@ function WalletPage() {
 
   const connectionMethodLabel = connectionMethod === 'freighter' ? t('wallet.freighter') : t('wallet.secretKey')
 
+  React.useEffect(() => {
+    if (previousBalanceRef.current !== balance) {
+      setBalanceFlash(true)
+      const timer = window.setTimeout(() => setBalanceFlash(false), 300)
+      previousBalanceRef.current = balance
+      return () => window.clearTimeout(timer)
+    }
+  }, [balance])
+
   const balanceDisplay = useMemo(() => {
     if (balanceLoading) {
       return <div className={styles.balanceSkeleton} aria-busy="true" />
@@ -128,12 +140,12 @@ function WalletPage() {
       return <span className={styles.balanceError}>—</span>
     }
     return (
-      <span className={styles.balanceAmount}>
-        {parseFloat(balance).toFixed(7)}{' '}
+      <span className={`${styles.balanceAmount} ${balanceFlash ? styles.balanceAmountFlash : ''}`}>
+        {formatXlmAmount(balance)}{' '}
         <span className={styles.balanceLabel}>XLM</span>
       </span>
     )
-  }, [balance, balanceLoading, balanceError])
+  }, [balance, balanceLoading, balanceError, balanceFlash])
 
   const balanceChips = useMemo(() => {
     const tokenBalances = balances.filter((entry) => entry.asset_type !== 'native')
@@ -342,6 +354,9 @@ function WalletPage() {
         <div className={styles.balanceSection}>
           <p className={styles.balanceTitle}>{t('wallet.availableBalance')}</p>
           {balanceDisplay}
+          <p className={styles.availableBalanceMeta}>
+            Available: {formatXlmAmount(availableBalance)} XLM • reserve: {formatXlmAmount(minimumReserve)} XLM
+          </p>
         </div>
 
         {balanceChips}

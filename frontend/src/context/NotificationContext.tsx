@@ -164,6 +164,12 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
       case 'payment_received':
       case 'payment_released':
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('wallet:balance-refresh', {
+            detail: { eventType, taskId, payload },
+          }));
+        }
+
         notification = {
           type: 'payment_received',
           title: 'Payment Received',
