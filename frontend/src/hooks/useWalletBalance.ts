@@ -13,6 +13,10 @@ export interface WalletBalance {
 interface BalanceInfo {
   /** Native XLM balance (kept for backward compatibility). */
   balance: string
+  /** Balance available after subtracting the Stellar minimum account reserve. */
+  availableBalance: string
+  /** Current minimum reserve required by the network. */
+  minimumReserve: string
   /** Full set of on-chain balances including native XLM and issued tokens. */
   balances: WalletBalance[]
   loading: boolean
@@ -26,6 +30,8 @@ interface BalanceInfo {
  */
 export function useWalletBalance(publicKey: string | null): BalanceInfo {
   const [balance, setBalance] = useState<string>('0')
+  const [availableBalance, setAvailableBalance] = useState<string>('0')
+  const [minimumReserve, setMinimumReserve] = useState<string>('0')
   const [balances, setBalances] = useState<WalletBalance[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
@@ -39,12 +45,13 @@ export function useWalletBalance(publicKey: string | null): BalanceInfo {
     const key = keyRef.current
     if (!key) {
       setBalance('0')
+      setAvailableBalance('0')
+      setMinimumReserve('0')
       setBalances([])
       setError(null)
       return
     }
 
-    // Only show loading indicator on the first fetch, not on subsequent polls
     if (isFirstLoad.current) {
       setLoading(true)
     }
@@ -53,6 +60,8 @@ export function useWalletBalance(publicKey: string | null): BalanceInfo {
       if (!res.ok) {
         if (res.status === 404) {
           setBalance('0')
+          setAvailableBalance('0')
+          setMinimumReserve('0')
           setBalances([])
           setError(null)
           return
@@ -62,7 +71,13 @@ export function useWalletBalance(publicKey: string | null): BalanceInfo {
       const data = await res.json()
       const rawBalances: WalletBalance[] = Array.isArray(data.balances) ? data.balances : []
       const xlmBalance = rawBalances.find((b) => b.asset_type === 'native')
+      const networkMinimumReserve = Number(data?.minimum_balance ?? data?.min_balance ?? 0)
+      const totalBalance = Number(xlmBalance?.balance ?? '0')
+      const available = Math.max(totalBalance - networkMinimumReserve, 0)
+
       setBalance(xlmBalance?.balance ?? '0')
+      setAvailableBalance(available.toString())
+      setMinimumReserve(networkMinimumReserve.toString())
       setBalances(rawBalances)
       setError(null)
       isFirstLoad.current = false
@@ -77,9 +92,20 @@ export function useWalletBalance(publicKey: string | null): BalanceInfo {
   useEffect(() => {
     fetchBalance()
 
+    const handleBalanceRefresh = () => {
+      void fetchBalance()
+    }
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('wallet:balance-refresh', handleBalanceRefresh)
+    }
+
     intervalRef.current = setInterval(fetchBalance, POLL_INTERVAL)
 
     return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('wallet:balance-refresh', handleBalanceRefresh)
+      }
       if (intervalRef.current) {
         clearInterval(intervalRef.current)
         intervalRef.current = null
@@ -87,5 +113,5 @@ export function useWalletBalance(publicKey: string | null): BalanceInfo {
     }
   }, [fetchBalance])
 
-  return { balance, balances, loading, error }
+  return { balance, availableBalance, minimumReserve, balances, loading, error }
 }
