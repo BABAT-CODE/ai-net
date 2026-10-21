@@ -265,7 +265,7 @@
   "page.task.dagHint": "点击节点查看日志",
   "page.task.dagEmpty": "DAG 中未配置节点",
   "page.task.agentNode": "智能体节点",
-  "page.notFound.title": "404 — 页面未找到",
+  "page.notFound.title": "糟糕！这个页面走丢了",
   "page.notFound.body": "你查找的页面不存在或已被移动。",
   "page.notFound.goDashboard": "前往仪表板",
   "page.notFound.goHome": "返回首页",
@@ -417,5 +417,17 @@
   "palette.action.copyAddressFailed": "无法复制钱包地址",
   "palette.action.toggleTheme": "切换主题",
   "palette.action.toggleThemeHint": "当前：{{mode}}",
-  "palette.task.noPrompt": "无提示词"
+  "palette.task.noPrompt": "无提示词",
+  "page.serverError.title": "出现问题",
+  "page.serverError.body": "服务器遇到意外错误，我们的团队已收到通知。",
+  "page.serverError.retry": "重试",
+  "page.serverError.reportIssue": "报告问题",
+  "page.forbidden.title": "访问被拒绝",
+  "page.forbidden.body": "您没有权限查看此页面。请连接钱包以继续。",
+  "page.forbidden.connectWallet": "连接钱包",
+  "page.forbidden.goDashboard": "前往控制台",
+  "page.notFound.searchAgents": "搜索智能体",
+  "errorPage.imageAlt.notFound": "迷路机器人智能体插图",
+  "errorPage.imageAlt.serverError": "服务器故障插图",
+  "errorPage.imageAlt.forbidden": "锁着的门插图"
 }
