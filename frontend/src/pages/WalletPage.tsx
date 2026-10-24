@@ -9,6 +9,7 @@ import { useTransactionHistory } from '../hooks/useTransactionHistory'
 import { SendXLMForm } from '../components/wallet/SendXLMForm'
 import { PaymentChart } from '../components/wallet/PaymentChart'
 import { TransactionTable } from '../components/wallet/TransactionTable'
+import { PaymentFeedback } from '../components/wallet/PaymentFeedback'
 import { WalletWizard } from '../components/wallet/WalletWizard'
 import { Skeleton, SkeletonAvatar, SkeletonCard, SkeletonText } from '../components/common/Skeleton'
 import { ConfirmDialog } from '../components/common/ConfirmDialog'
@@ -36,7 +37,10 @@ export function WalletPageSkeleton() {
       <div className={styles.balanceCardSkeleton}>
         <div className={styles.balanceSkeletonSection}>
           <Skeleton width="10rem" height="0.75rem" />
-          <Skeleton width="14rem" height="2rem" />
+          <div className={styles.balanceValueSkeleton}>
+            <Skeleton width="14rem" height="2rem" />
+            <Skeleton width="2.5rem" height="1rem" />
+          </div>
         </div>
         <div className={styles.publicKeySkeleton}>
           <SkeletonAvatar size={116} data-testid="wallet-qr-skeleton" />
@@ -125,7 +129,12 @@ function WalletPage() {
 
   const balanceDisplay = useMemo(() => {
     if (balanceLoading) {
-      return <div className={styles.balanceSkeleton} aria-busy="true" />
+      return (
+        <div className={styles.balanceValueSkeleton} aria-busy="true">
+          <Skeleton width="14rem" height="2rem" />
+          <Skeleton width="2.5rem" height="1rem" />
+        </div>
+      )
     }
     if (balanceError) {
       return <span className={styles.balanceError}>—</span>
@@ -369,6 +378,8 @@ function WalletPage() {
           {t('nav.wallet')}
         </h1>
       </div>
+
+      <PaymentFeedback />
 
       {/* Balance Card */}
       <div className={styles.balanceCard}>
