@@ -328,6 +328,17 @@ Subscribe to Server-Sent Events (SSE) for real-time step-by-step task execution 
   data: {"status": "completed", "outputUrl": "https://reports.ai-net.io/task-8f92a1.pdf"}
   ```
 
+#### 🔗 Direct On-Chain Access
+
+The endpoints above route through the backend coordinator. If you need to interact with the Soroban smart contracts directly — for example, to read contract storage without authentication, sign custom transactions, or build tooling against contract ABIs — see the **[Smart Contract Interaction Guide](./SMART_CONTRACT_INTERACTION.md)**.
+
+That guide covers:
+- Testnet contract addresses (AgentRegistry, TaskStore, EscrowVault, ReputationOracle)
+- Complete TypeScript examples for agent registration, task submission, task status polling, escrow release, and reputation queries
+- The `simulateTransaction` → `assembleTransaction` → `sendTransaction` lifecycle
+- Soroban error code decoding and retry strategy for ledger congestion
+- Rust inter-contract call example using `env.invoke_contract()`
+
 ---
 
 ### 3.4 Network Stats & Reconciliation (`/api/v1/stats`, `/api/v1/reconciliation`)
